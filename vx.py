@@ -4,6 +4,7 @@ import os
 import argparse
 
 from extractor import extract
+from model import VxException
 
 
 parser = argparse.ArgumentParser(prog='vx')
@@ -19,8 +20,7 @@ if __name__ == '__main__':
 		extract(args.videos, args.in_dir)
 	except KeyboardInterrupt:
 		print('\nAbort')
-	except Exception as error:
+	except VxException as error:
 		parser.print_usage()
-		# TODO personalizar os possíveis erros
-		print('vx: error: ' + error.args[0])
+		print('vx: error: ' + error.value)
 

@@ -3,14 +3,14 @@ import sys
 import json
 import subprocess
 
-from model import Subtitle
+from model import Subtitle, VxException
 
 
 def get_subtitles(video, extrapath):
 	result = json.loads(subprocess.check_output(['mkvmerge', '-i', '-F', 'json', video], universal_newlines=True))
 
 	if not result.get('container').get('recognized'):
-		raise Exception('Unsupported file')
+		raise VxException('Unsupported file')
 	
 	subs = [Subtitle(track, video, extrapath) for track in result.get('tracks') if track.get('type') == 'subtitles']
 

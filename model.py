@@ -23,7 +23,7 @@ class SubtitleType(Enum):
 			if member.codec_id == codec_id:
 				return member
 		
-		raise Exception("The 'vx' not support the 'codec_id' : {!r}".format(codec_id))
+		raise VxException("The 'vx' not support the 'codec_id' : {!r}".format(codec_id))
 	
 
 class Subtitle(object):
@@ -44,4 +44,13 @@ class Subtitle(object):
 	
 	def __str__(self):
 		return '{sub.track_id}:{sub.filename}'.format(sub=self)
+
+
+class VxException(Exception):
+	
+	def __init__(self, value):
+		self.value = value
+	
+	def __str__(self):
+		return repr(self.value)
 
