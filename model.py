@@ -4,7 +4,7 @@ from enum import Enum, unique
 
 
 @unique
-class SubtitleType(Enum):
+class SubtitleFileType(Enum):
 	S_KATE = ('S_KATE', 'ogg')
 	S_VOBSUB = ('S_VOBSUB', 'sub')
 	S_TEXT_ASS = ('S_TEXT/ASS', 'ass')
@@ -28,22 +28,19 @@ class SubtitleType(Enum):
 
 class Subtitle(object):
 	
-	def __init__(self, track, video, extrapath):
+	__type__ = 'subtitles'
+	
+	def __init__(self, track, video):
 		self.video = video
-		self.extrapath = extrapath
 		self.concat_track_id = False
 		self.track_id = track.get('id')
-		self.type = SubtitleType.get(track.get('properties').get('codec_id'))
+		self.filetype = SubtitleFileType.get(track.get('properties').get('codec_id'))
 	
 	@property
 	def filename(self):
 		basename, extension = os.path.splitext(os.path.basename(self.video))
 		track_id = '{}__'.format(self.track_id) if self.concat_track_id else ''
-		filename = '{track_id}{0}.{type}'.format(basename, type=self.type.extension, track_id=track_id)
-		return os.path.join(self.extrapath, filename)
-	
-	def __str__(self):
-		return '{sub.track_id}:{sub.filename}'.format(sub=self)
+		return '{track_id}{0}.{type}'.format(basename, type=self.filetype.extension, track_id=track_id)
 
 
 class VxException(Exception):
