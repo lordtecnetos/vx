@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-import os
 import argparse
 
 from extractor import extract
@@ -23,4 +22,3 @@ if __name__ == '__main__':
 	except VxException as error:
 		parser.print_usage()
 		print('vx: error: ' + error.value)
-
