@@ -5,6 +5,13 @@ import subprocess
 from model import Subtitle, VxException
 
 
+def verify(met):
+	try:
+		subprocess.check_output(['mkvmerg', '-V'], universal_newlines=True)
+	except FileNotFoundError as e:
+		print(e.args)
+
+
 def find_in(video, model):
 	info = json.loads(subprocess.check_output(['mkvmerge', '-i', '-F', 'json', video], universal_newlines=True))
 
@@ -25,6 +32,7 @@ def extract_subtitles(video, extrapath=''):
 	return subtitles
 
 
+# @verify
 def extract(videos, extrapath=''):
 	for video in videos:
 		with video as v:
