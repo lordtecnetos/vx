@@ -1,3 +1,4 @@
+import re
 import os
 import json
 import subprocess
@@ -9,12 +10,17 @@ from distutils.version import LooseVersion
 def verify(method):
 	def inner(*args, **kwargs):
 		try:
-			subprocess.check_output(['mkvmerge', '-V'], universal_newlines=True)
+			version = subprocess.check_output(['mkvmerge', '-V'], universal_newlines=True)
+
+			match = re.search(r'v[\d.]+', version).group()
+
+			if match and LooseVersion(version) < LooseVersion('v9.2.0'):
+				raise VxException('Versao menor que v9.2.0')
+
 			subprocess.check_output(['mkvextract', '-V'], universal_newlines=True)
 			method(*args, **kwargs)
 		except FileNotFoundError as e:
-			print(e.args)
-			return
+			raise VxException(e.args[1])
 
 	return inner
 
