@@ -3,15 +3,23 @@ import json
 import subprocess
 
 from model import Subtitle, VxException
+from distutils.version import LooseVersion
 
 
-def verify(met):
-	try:
-		subprocess.check_output(['mkvmerg', '-V'], universal_newlines=True)
-	except FileNotFoundError as e:
-		print(e.args)
+def verify(method):
+	def inner(*args, **kwargs):
+		try:
+			subprocess.check_output(['mkvmerge', '-V'], universal_newlines=True)
+			subprocess.check_output(['mkvextract', '-V'], universal_newlines=True)
+			method(*args, **kwargs)
+		except FileNotFoundError as e:
+			print(e.args)
+			return
+
+	return inner
 
 
+@verify
 def find_in(video, model):
 	info = json.loads(subprocess.check_output(['mkvmerge', '-i', '-F', 'json', video], universal_newlines=True))
 
@@ -21,6 +29,7 @@ def find_in(video, model):
 	return [model(track, video) for track in info.get('tracks') if track.get('type') == model.__type__]
 
 
+@verify
 def extract_subtitles(video, extrapath=''):
 	subtitles = find_in(video, Subtitle)
 
@@ -32,7 +41,7 @@ def extract_subtitles(video, extrapath=''):
 	return subtitles
 
 
-# @verify
+@verify
 def extract(videos, extrapath=''):
 	for video in videos:
 		with video as v:
