@@ -1,29 +1,9 @@
-import re
 import os
 import json
 import subprocess
 
 from model import Subtitle, VxException
-from distutils.version import LooseVersion
-
-
-def verify(method):
-	def inner(*args, **kwargs):
-		try:
-			version = subprocess.check_output(['mkvmerge', '-V'], universal_newlines=True)
-
-			match = re.search(r'v[\d.]+', version).group()
-
-			if match and LooseVersion(version) < LooseVersion('v9.2.0'):
-				raise VxException('Versao menor que v9.2.0')
-
-			subprocess.check_output(['mkvextract', '-V'], universal_newlines=True)
-			method(*args, **kwargs)
-		except FileNotFoundError as e:
-			raise VxException(e.args[1])
-
-	return inner
-
+from validation import verify
 
 @verify
 def find_in(video, model):
@@ -47,7 +27,6 @@ def extract_subtitles(video, extrapath=''):
 	return subtitles
 
 
-@verify
 def extract(videos, extrapath=''):
 	for video in videos:
 		with video as v:
