@@ -19,11 +19,10 @@ def find_in(video, model):
 @verify_tools
 def extract_subtitles(video, extrapath=''):
 	subtitles = find_in(video, Subtitle)
-
-	if not subtitles:
-		print('{!r} does not have tracks with subtitles'.format(video))
-
 	for sub in subtitles:
 		sub.concat_track_id = len(subtitles) > 1
 		out_filename = os.path.join(extrapath, sub.filename)
-		subprocess.call(['mkvextract', 'tracks', video, '{0}:{1}'.format(sub.track_id, out_filename)])
+		subprocess.call(['mkvextract', 'tracks', video, '{}:{}'.format(sub.track_id, out_filename)])
+		break
+	else:
+		print('{!r} does not have tracks with subtitles'.format(video))
