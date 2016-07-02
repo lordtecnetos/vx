@@ -5,6 +5,7 @@ import subprocess
 from model import Subtitle, VxException
 from validation import verify
 
+
 @verify
 def find_in(video, model):
 	info = json.loads(subprocess.check_output(['mkvmerge', '-i', '-F', 'json', video], universal_newlines=True))
