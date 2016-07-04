@@ -9,11 +9,12 @@ tools = ('mkvmerge', 'mkvextract')
 
 def check_tool(tool):
 	try:
-		version = subprocess.check_output([tool, '-V'], universal_newlines=True)
-		match = re.search(r'v[\d.]+', version).group()
-		if match and LooseVersion(match) < LooseVersion('v9.2.0'):
+		search = re.search(r'v[\d.]+', subprocess.check_output([tool, '-V'], universal_newlines=True))
+		version = search and search.group()
+		if version and LooseVersion(version) < LooseVersion('v9.2.0'):
 			raise VxException('{!r} possui versão menor que v9.2.0'.format(tool))
 	except FileNotFoundError as e:
+		# TODO message
 		raise VxException(e.args[1])
 
 
