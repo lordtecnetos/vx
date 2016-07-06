@@ -12,30 +12,29 @@ class SubtitleFileType(Enum):
 	S_TEXT_USF = ('S_TEXT/USF', 'usf')
 	S_HDMV_PGS = ('S_HDMV/PGS', 'sup')
 	S_TEXT_UTF8 = ('S_TEXT/UTF8', 'srt')
-	
+
 	def __init__(self, codec_id, extension):
 		self.codec_id = codec_id
 		self.extension = extension
-	
+
 	@classmethod
 	def get(cls, codec_id):
 		for name, member in cls.__members__.items():
 			if member.codec_id == codec_id:
 				return member
-		
+
 		raise VxException("The 'vx' not support the 'codec_id' : {!r}".format(codec_id))
-	
+
 
 class Subtitle(object):
-	
 	__type__ = 'subtitles'
-	
+
 	def __init__(self, track, video):
 		self.video = video
 		self.concat_track_id = False
 		self.track_id = track.get('id')
 		self.filetype = SubtitleFileType.get(track.get('properties').get('codec_id'))
-	
+
 	@property
 	def filename(self):
 		basename, extension = os.path.splitext(os.path.basename(self.video))
@@ -44,10 +43,8 @@ class Subtitle(object):
 
 
 class VxException(Exception):
-	
 	def __init__(self, value):
 		self.value = value
-	
+
 	def __str__(self):
 		return repr(self.value)
-
