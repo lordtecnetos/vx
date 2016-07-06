@@ -4,7 +4,7 @@ from distutils.version import LooseVersion
 
 from model import VxException
 
-tools = ('mkvmergej', 'mkvextract')
+tools = ('mkvmerge', 'mkvextract')
 
 
 def check_tool(tool):
