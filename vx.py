@@ -23,3 +23,4 @@ if __name__ == '__main__':
 	except VxException as error:
 		parser.print_usage()
 		print('vx: error: ' + error.value)
+
