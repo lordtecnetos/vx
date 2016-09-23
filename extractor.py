@@ -16,7 +16,7 @@ def check_tool(tool):
 		if version and LooseVersion(version) < LooseVersion('v9.2.0'):
 			raise VxException('{!r} must have the version v9.2.0 or newer.'.format(tool))
 	except FileNotFoundError:
-		raise VxException('{0!r} Not found. Please install {0!r} in v9.2.0 version or newer.'.format(tool))
+		raise VxException('{0!r} Not found.\nPlease install {0!r} in v9.2.0 version or newer.'.format(tool))
 
 
 def verify_tools(function):
