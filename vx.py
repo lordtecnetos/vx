@@ -79,6 +79,8 @@ class ExtractionMode(object):
 
 class Tracks(ExtractionMode):
 
+	""" Tracks extraction mode """
+
 	__mode__ = 'tracks'
 
 	def __init__(self, identification_json, type_='subtitles', basedir=''):
@@ -99,6 +101,8 @@ class Tracks(ExtractionMode):
 
 
 class Attachments(ExtractionMode):
+
+	""" Attachments extraction mode """
 
 	__mode__ = 'attachments'
 
@@ -160,16 +164,16 @@ class tools(object):
 
 
 @tools.verify(MKV_MERGE)
-def get_output_specs(mode, video_filename, **kwargs):
+def get_extraction_specs(mode, video_filename, **kwargs):
 	commands = [MKV_MERGE, '-i', '-F', 'json', video_filename]
 	data = subprocess.check_output(commands, universal_newlines=True)
 
-	output_specs = mode(json.loads(data), **kwargs).specs()
+	extraction_specs = mode(json.loads(data), **kwargs).specs()
 
-	if not output_specs:
+	if not extraction_specs:
 		raise VxException('Nothing was found')
 
-	return output_specs
+	return extraction_specs
 
 
 @tools.verify(MKV_EXTRACT)
@@ -180,11 +184,11 @@ def extract(namespace):
 		with video_obj as video:
 			try:
 				print('Processing: {!r}'.format(os.path.basename(video.name)))
-				output_specs = get_output_specs(namespace.mode, video.name, 
-												**kwargs)
+				extraction_specs = get_extraction_specs(namespace.mode, 
+														video.name, **kwargs)
 				
 				commands = [MKV_EXTRACT, namespace.mode.__mode__, video.name]
-				commands.extend(output_specs)
+				commands.extend(extraction_specs)
 				subprocess.call(commands)
 			except VxException as error:
 				print(error.message)
@@ -195,21 +199,30 @@ def extract(namespace):
 class ArgsBuilder(object):
 	
 	def __init__(self):
-		self.parser = argparse.ArgumentParser(prog=__prog__)
-		subparsers = self.parser.add_subparsers(help='subparsers')
-		
-		tracks_parser = subparsers.add_parser('tracks', help='Tracks')
-		tracks_parser.add_argument('--type', dest='type_', metavar='type', 
-			default='subtitles', help='type', choices=['subtitles'])
-		self.add_argument_basedir(tracks_parser, action=self.DefaultDirAction)
-		self.add_argument_videos(tracks_parser)
-		tracks_parser.set_defaults(mode=Tracks)
+		self.parser = argparse.ArgumentParser(description="This program "
+						"extracts specific parts of several Matroska files. "
+						"The {!r} and {!r} commands from 'MKVToolNix' are used "
+						"to perform the task".format(MKV_EXTRACT, MKV_MERGE), 
+						prog=__prog__)
 
-		attachments_parser = subparsers.add_parser('attachments', help='Attachs')
+		self.subparsers = self.parser.add_subparsers(help='extraction modes')
+
+		tracks_parser = self.add_parser_extraction_mode(Tracks)
+		self.add_argument_basedir(tracks_parser, action=self.DefaultDirAction)
+		tracks_parser.add_argument('--type', dest='type_', default='subtitles', 
+			help='type', choices=['subtitles'])
+
+		attachments_parser = self.add_parser_extraction_mode(Attachments)
 		self.add_argument_basedir(attachments_parser, const='attachments')
-		self.add_argument_videos(attachments_parser)
-		attachments_parser.set_defaults(mode=Attachments)
-	
+
+	def add_parser_extraction_mode(self, mode):
+		help_message = 'extract {.__mode__} from Matroska files'.format(mode)
+		parser = self.subparsers.add_parser(mode.__mode__, help=help_message, 
+											description=mode.__doc__)
+		self.add_argument_videos(parser)
+		parser.set_defaults(mode=mode)
+		return parser
+
 	def add_argument_videos(self, parser):
 		parser.add_argument('videos', metavar='video', nargs='+', 
 			type=argparse.FileType('r'), help='video or videos to extraction')
@@ -237,6 +250,7 @@ class ArgsBuilder(object):
 					del dict_[exclude]
 		
 			return dict_
+
 
 def main():
 	try:
