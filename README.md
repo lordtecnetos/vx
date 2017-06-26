@@ -20,7 +20,7 @@ After installed, type `vx` or `vx -h` or `vx --help` to see the options and comm
 
 Basic usage: `vx [-h] {tracks,attachments} ...`
 
-**vx** supports only two extraction modes offered by `mkvextract` command, [see](https://mkvtoolnix.download/doc/mkvextract.html) the docs:
+**vx** only supports two extraction modes offered by `mkvextract` command, [see](https://mkvtoolnix.download/doc/mkvextract.html) your docs:
 
 * #### Tracks extraction mode
   
@@ -35,20 +35,20 @@ Basic usage: `vx [-h] {tracks,attachments} ...`
   * `-h` or `--help` (*optional*) - show the help message
  
   ##### Examples:
-  
-    ```
-    # minimum command, extracts all subtitles from one video to current directory with name of video file
-    $ vx tracks video.mkv
+  ```
+  # minimum command, extracts all subtitles from one video to current directory with name of video file
+  $ vx tracks video.mkv
 
-    # extracts all subtitles from video1 and video2 to current directory
-    $ vx tracks video1.mkv video2.mkv 
+  # extracts all subtitles from video1 and video2 to current directory
+  $ vx tracks video1.mkv video2.mkv 
 
-    # extracts all subtitles from the files with 'mkv' extension in current directory to subtitles directory
-    $ vx tracks *.mkv --dir 
+  # extracts all subtitles from the files with 'mkv' extension in current directory to subtitles directory
+  $ vx tracks *.mkv --dir 
 
-    # extracts all subtitles from video to ~/Downloads directory
-    $ vx tracks video.mkv --dir ~/Downloads
-    
+  # extracts all subtitles from video to ~/Downloads directory
+  $ vx tracks video.mkv --dir ~/Downloads
+  ```
+
 * #### Attachments extraction mode
 
   `vx attachments [-h] [--dir [directory]] video [video ...]`
@@ -60,21 +60,22 @@ Basic usage: `vx [-h] {tracks,attachments} ...`
   * `-h` or `--help` (*optional*) - show the help message
   
   ##### Examples:
-  
-    ```
-    # This mode extracts all attachments inside a new directory with name of each video file
-    
-    # minimum command, extracts all attachments from one video
-    $ vx attachments video.mkv
+  ```
+  # This mode extracts all attachments inside a new directory with name of each video file
 
-    # extracts all attachments from video1 and video2
-    $ vx attachments video1.mkv video2.mkv 
+  # minimum command, extracts all attachments from one video
+  $ vx attachments video.mkv
 
-    # extracts all attachments from the files with 'mkv' extension in current directory to attachments directory
-    $ vx attachments *.mkv --dir 
+  # extracts all attachments from video1 and video2
+  $ vx attachments video1.mkv video2.mkv 
 
-    # extracts all attachments from video to ~/Downloads directory
-    $ vx attachments video.mkv --dir ~/Downloads
+  # extracts all attachments from the files with 'mkv' extension in current directory to attachments directory
+  $ vx attachments *.mkv --dir 
+
+  # extracts all attachments from video to ~/Downloads directory
+  $ vx attachments video.mkv --dir ~/Downloads
+  ```
+
 ### Author and Contact
 
 Alessandro Beleboni Belini (lordtecnetos@gmail.com)
