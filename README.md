@@ -12,7 +12,11 @@ task.
 
 ### Install
 
-TODO
+Clone or download this repository, move the directory or files to a path of your choice.
+
+On Linux/UNIX edit your `.bashrc` and add at final a line with: `alias vx='/path/your/vx/vx.py'`.
+
+On Windows not tested heheh
 
 ### Usage
 
