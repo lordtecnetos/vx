@@ -125,7 +125,7 @@ class VxException(Exception):
 		self.message = message
 
 	def print_message(self):
-		print(self.message)
+		print(str(self))
 
 	def __str__(self):
 		return self.message
