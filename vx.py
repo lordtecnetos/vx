@@ -122,14 +122,13 @@ class Attachments(ExtractionMode):
 class VxException(Exception):
 
 	def __init__(self, message):
-		self._message = message
+		self.message = message
 
-	@property
-	def message(self):
-		return '{}: error: {._message}'.format(__prog__, self)
+	def print_message(self):
+		print(self.message)
 
 	def __str__(self):
-		return repr(self.message)
+		return self.message
 
 
 class tools(object):
@@ -178,7 +177,7 @@ def get_extraction_specs(mode, video_filename, **kwargs):
 
 @tools.verify(MKV_EXTRACT)
 def extract(namespace):
-	kwargs = namespace.to_dict(excludes=('mode', 'videos'))
+	kwargs = namespace.vars(excludes=('mode', 'videos'))
 
 	for video_obj in namespace.videos:
 		with video_obj as video:
@@ -191,16 +190,17 @@ def extract(namespace):
 				commands.extend(extraction_specs)
 				subprocess.call(commands)
 			except VxException as error:
-				print(error.message)
+				error.print_message()
 		
 		if video_obj != namespace.videos[-1]:
 			print()
+
 
 class ArgsBuilder(object):
 	
 	def __init__(self):
 		self.parser = argparse.ArgumentParser(description="This program "
-						"extracts specific parts of several Matroska files. "
+						"extracts specific parts from multiple Matroska file. "
 						"The {!r} and {!r} commands from 'MKVToolNix' are used "
 						"to perform the task".format(MKV_EXTRACT, MKV_MERGE), 
 						prog=__prog__)
@@ -208,12 +208,19 @@ class ArgsBuilder(object):
 		self.subparsers = self.parser.add_subparsers(help='extraction modes')
 
 		tracks_parser = self.add_parser_extraction_mode(Tracks)
-		self.add_argument_basedir(tracks_parser, action=self.DefaultDirAction)
+
+		self.add_argument_basedir(tracks_parser, "default: '--type' value", 
+									action=self.DefaultDirAction)
+
 		tracks_parser.add_argument('--type', dest='type_', default='subtitles', 
-			help='type', choices=['subtitles'])
+									help="type of track to extraction "
+									"(default: '%(default)s')", 
+									choices=['subtitles'])
 
 		attachments_parser = self.add_parser_extraction_mode(Attachments)
-		self.add_argument_basedir(attachments_parser, const='attachments')
+
+		self.add_argument_basedir(attachments_parser, "default: 'attachments'", 
+									const='attachments')
 
 	def add_parser_extraction_mode(self, mode):
 		help_message = 'extract {.__mode__} from Matroska files'.format(mode)
@@ -224,12 +231,15 @@ class ArgsBuilder(object):
 		return parser
 
 	def add_argument_videos(self, parser):
-		parser.add_argument('videos', metavar='video', nargs='+', 
-			type=argparse.FileType('r'), help='video or videos to extraction')
+		parser.add_argument('videos', type=argparse.FileType('r'), nargs='+', 
+							help='video or videos to extraction', 
+							metavar='video')
 	
-	def add_argument_basedir(self, parser, **kwargs):
-		parser.add_argument('--dir', dest='basedir', metavar='dirname', 
-			default='', nargs='?', **kwargs, help='basedir')
+	def add_argument_basedir(self, parser, default_help_desc, **kwargs):
+		parser.add_argument('--dir', help='directory that will contain the '
+							'extracted files ({})'.format(default_help_desc), 
+							dest='basedir', default='', nargs='?', 
+							metavar='directory', **kwargs)
 
 	def parse_args(self):
 		instance = self.Namespace()
@@ -243,7 +253,7 @@ class ArgsBuilder(object):
 
 	class Namespace(argparse.Namespace):
 	
-		def to_dict(self, excludes=None):
+		def vars(self, excludes=None):
 			dict_ = vars(self).copy()
 			for exclude in excludes or ():
 				if exclude in dict_:
@@ -264,7 +274,7 @@ def main():
 		print('\nAbort')
 	except VxException as error:
 		builder.parser.print_usage()
-		print(error.message)
+		error.print_message()
 
 
 if __name__ == '__main__':
