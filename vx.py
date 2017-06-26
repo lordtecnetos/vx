@@ -192,8 +192,8 @@ def extract(namespace):
 			except VxException as error:
 				error.print_message()
 		
-		if video_obj != namespace.videos[-1]:
-			print()
+			if video != namespace.videos[-1]:
+				print()
 
 
 class ArgsBuilder(object):
@@ -253,7 +253,7 @@ class ArgsBuilder(object):
 			setattr(namespace, self.dest, values or namespace.type_)
 
 	class Namespace(argparse.Namespace):
-	
+
 		def vars(self, excludes=None):
 			dict_ = vars(self).copy()
 			for exclude in excludes or ():
