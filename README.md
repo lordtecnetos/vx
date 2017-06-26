@@ -38,6 +38,8 @@ Basic usage: `vx [-h] {tracks,attachments} ...`
   ```
   # minimum command, extracts all subtitles from one video to current directory with name of video file
   $ vx tracks video.mkv
+  # or, from multiple files
+  $ vx tracks *.mkv
 
   # extracts all subtitles from video1 and video2 to current directory
   $ vx tracks video1.mkv video2.mkv 
@@ -65,6 +67,8 @@ Basic usage: `vx [-h] {tracks,attachments} ...`
 
   # minimum command, extracts all attachments from one video
   $ vx attachments video.mkv
+  # or, from multiple files
+  $ vx attachments *.mkv
 
   # extracts all attachments from video1 and video2
   $ vx attachments video1.mkv video2.mkv 
