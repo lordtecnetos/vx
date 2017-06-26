@@ -30,7 +30,7 @@ Basic usage: `vx [-h] {tracks,attachments} ...`
   
   * `--dir [directory]` (*optional*) - directory that will contain the extracted files (*default: `--type` value, if `[directory]` is empty*)
   
-  * `--type {subtitles}` (*optional*) - type of track to extraction (*default: `subtitles`*). There are others types of tracks, how `audio` and `video`, but only `subtitles` type is supported
+  * `--type {subtitles}` (*optional*) - type of track to extraction (*default: `subtitles`*). There are others types of tracks, how `audio` and `video`, but, in this version, only `subtitles` type is supported ;)
   
   * `-h` or `--help` (*optional*) - show the help message
  
