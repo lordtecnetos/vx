@@ -236,8 +236,9 @@ class ArgsBuilder(object):
 							metavar='video')
 	
 	def add_argument_basedir(self, parser, default_help_desc, **kwargs):
-		parser.add_argument('--dir', help='directory that will contain the '
-							'extracted files ({})'.format(default_help_desc), 
+		parser.add_argument('--dir', help="directory that will contain the "
+							"extracted items ({}), if [%(metavar)s] "
+							"is empty".format(default_help_desc), 
 							dest='basedir', default='', nargs='?', 
 							metavar='directory', **kwargs)
 
