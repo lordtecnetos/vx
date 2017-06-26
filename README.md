@@ -38,16 +38,16 @@ Basic usage: `vx [-h] {tracks,attachments} ...`
   
     ```
     # minimum command, extracts all subtitles from one video to current directory with name of video file
-    vx tracks video.mkv
+    $ vx tracks video.mkv
 
     # extracts all subtitles from video1 and video2 to current directory
-    vx tracks video1.mkv video2.mkv 
+    $ vx tracks video1.mkv video2.mkv 
 
     # extracts all subtitles from the files with 'mkv' extension in current directory to subtitles directory
-    vx tracks *.mkv --dir 
+    $ vx tracks *.mkv --dir 
 
     # extracts all subtitles from video to ~/Downloads directory
-    vx tracks video.mkv --dir ~/Downloads
+    $ vx tracks video.mkv --dir ~/Downloads
     
 * #### Attachments extraction mode
 
@@ -65,16 +65,16 @@ Basic usage: `vx [-h] {tracks,attachments} ...`
     # This mode extracts all attachments inside a new directory with name of each video file
     
     # minimum command, extracts all attachments from one video
-    vx attachments video.mkv
+    $ vx attachments video.mkv
 
     # extracts all attachments from video1 and video2
-    vx attachments video1.mkv video2.mkv 
+    $ vx attachments video1.mkv video2.mkv 
 
     # extracts all attachments from the files with 'mkv' extension in current directory to attachments directory
-    vx attachments *.mkv --dir 
+    $ vx attachments *.mkv --dir 
 
     # extracts all attachments from video to ~/Downloads directory
-    vx attachments video.mkv --dir ~/Downloads
+    $ vx attachments video.mkv --dir ~/Downloads
 ### Author and Contact
 
 Alessandro Beleboni Belini (lordtecnetos@gmail.com)
