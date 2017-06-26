@@ -28,7 +28,7 @@ Basic usage: `vx [-h] {tracks,attachments} ...`
   
   * `video [video ...]` (*required*) - video or videos to extraction
   
-  * `--dir [directory]` (*optional*) - directory that will contain the extracted files (*default: `--type` value, if `[directory]` is empty*)
+  * `--dir [directory]` (*optional*) - directory that will contain the extracted items (*default: `--type` value, if `[directory]` is empty*)
   
   * `--type {subtitles}` (*optional*) - type of track to extraction (*default: `subtitles`*). There are others types of tracks, how `audio` and `video`, but, in this version, only `subtitles` type is supported ;)
   
@@ -55,7 +55,7 @@ Basic usage: `vx [-h] {tracks,attachments} ...`
 
   * `video [video ...]` (*required*) - video or videos to extraction
   
-  * `--dir [directory]` (*optional*) - directory that will contain the extracted files (*default: `attachments`, if `[directory]` is empty*)
+  * `--dir [directory]` (*optional*) - directory that will contain the extracted items (*default: `attachments`, if `[directory]` is empty*)
   
   * `-h` or `--help` (*optional*) - show the help message
   
@@ -79,3 +79,4 @@ Basic usage: `vx [-h] {tracks,attachments} ...`
 ### Author and Contact
 
 Alessandro Beleboni Belini (lordtecnetos@gmail.com)
+
