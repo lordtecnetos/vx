@@ -48,8 +48,7 @@ Basic usage: `vx [-h] {tracks,attachments} ...`
 
     # extracts all subtitles from video to ~/Downloads directory
     vx tracks video.mkv --dir ~/Downloads
-    ```
-
+    
 * #### Attachments extraction mode
 
   `vx attachments [-h] [--dir [directory]] video [video ...]`
@@ -76,4 +75,6 @@ Basic usage: `vx [-h] {tracks,attachments} ...`
 
     # extracts all attachments from video to ~/Downloads directory
     vx attachments video.mkv --dir ~/Downloads
-  
+### Author and Contact
+
+Alessandro Beleboni Belini (lordtecnetos@gmail.com)
