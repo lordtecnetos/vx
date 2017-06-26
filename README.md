@@ -8,7 +8,7 @@ task.
 ### Requirements
 
 * [Python](https://www.python.org/) programming language (*version 3.4 or newer*)
-* [MKVToolNix](https://mkvtoolnix.download/) tools (*version 9.2.0 or newer*)
+* [MKVToolNix](https://mkvtoolnix.download/) tools (*version 9.2 or newer*)
 
 ### Install
 
