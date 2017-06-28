@@ -189,8 +189,8 @@ def extract(namespace):
 				commands = [MKV_EXTRACT, namespace.mode.__mode__, video.name]
 				commands.extend(extraction_specs)
 				subprocess.call(commands)
-			except VxException as error:
-				error.print_message()
+			except VxException as e:
+				e.print_message()
 
 			if video != namespace.videos[-1]:
 				print()
@@ -273,9 +273,8 @@ def main():
 			builder.parser.print_help()
 	except KeyboardInterrupt:
 		print('\nAbort')
-	except VxException as error:
-		builder.parser.print_usage()
-		error.print_message()
+	except VxException as e:
+		e.print_message()
 
 
 if __name__ == '__main__':
