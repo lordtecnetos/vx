@@ -36,7 +36,7 @@ class FileType(Enum):
 		for name, member in cls.__members__.items():
 			if member.codec_id == codec_id:
 				return member
-		
+
 		raise VxException("unsupported 'codec_id' : {!r}".format(codec_id))
 
 
@@ -57,7 +57,7 @@ class ExtractionMode(object):
 	def identification_json(self, identification_json):
 		if not identification_json.get('container').get('recognized'):
 			raise VxException('unsupported file')
-		
+
 		self.__identification_json = identification_json
 
 	@property
@@ -67,7 +67,7 @@ class ExtractionMode(object):
 	@sourcefilename.setter
 	def sourcefilename(self, filename):
 		self.__sourcefilename = os.path.basename(filename)
-	
+
 	@property
 	def sourcename(self): # video
 		return os.path.splitext(self.sourcefilename)[0]
@@ -90,7 +90,7 @@ class Tracks(ExtractionMode):
 		tracks, subtitles = self.identification_json.get(self.__mode__), []
 		subs = [track for track in tracks if track.get('type') == self.type]
 		basedir = self.basedir_sourcename
-		
+
 		for sub in subs:
 			ftype = FileType.get(sub.get('properties').get('codec_id'))
 			extraname = '_' + sub.get('id') if len(subs) > 1 else ''
@@ -183,63 +183,63 @@ def extract(namespace):
 		with video_obj as video:
 			try:
 				print('Processing: {!r}'.format(os.path.basename(video.name)))
-				extraction_specs = get_extraction_specs(namespace.mode, 
+				extraction_specs = get_extraction_specs(namespace.mode,
 														video.name, **kwargs)
-				
+
 				commands = [MKV_EXTRACT, namespace.mode.__mode__, video.name]
 				commands.extend(extraction_specs)
 				subprocess.call(commands)
 			except VxException as error:
 				error.print_message()
-		
+
 			if video != namespace.videos[-1]:
 				print()
 
 
 class ArgsBuilder(object):
-	
+
 	def __init__(self):
 		self.parser = argparse.ArgumentParser(description="This program "
 						"extracts specific parts from multiple Matroska file. "
 						"The {!r} and {!r} commands from 'MKVToolNix' are used "
-						"to perform the task".format(MKV_EXTRACT, MKV_MERGE), 
+						"to perform the task".format(MKV_EXTRACT, MKV_MERGE),
 						prog=__prog__)
 
 		self.subparsers = self.parser.add_subparsers(help='extraction modes')
 
 		tracks_parser = self.add_parser_extraction_mode(Tracks)
 
-		self.add_argument_basedir(tracks_parser, "default: '--type' value", 
+		self.add_argument_basedir(tracks_parser, "default: '--type' value",
 									action=self.DefaultDirAction)
 
-		tracks_parser.add_argument('--type', dest='type_', default='subtitles', 
+		tracks_parser.add_argument('--type', dest='type_', default='subtitles',
 									help="type of track to extraction "
-									"(default: '%(default)s')", 
+									"(default: '%(default)s')",
 									choices=['subtitles'])
 
 		attachments_parser = self.add_parser_extraction_mode(Attachments)
 
-		self.add_argument_basedir(attachments_parser, "default: 'attachments'", 
+		self.add_argument_basedir(attachments_parser, "default: 'attachments'",
 									const='attachments')
 
 	def add_parser_extraction_mode(self, mode):
 		help_message = 'extract {.__mode__} from Matroska files'.format(mode)
-		parser = self.subparsers.add_parser(mode.__mode__, help=help_message, 
+		parser = self.subparsers.add_parser(mode.__mode__, help=help_message,
 											description=mode.__doc__)
 		self.add_argument_videos(parser)
 		parser.set_defaults(mode=mode)
 		return parser
 
 	def add_argument_videos(self, parser):
-		parser.add_argument('videos', type=argparse.FileType('r'), nargs='+', 
-							help='video or videos to extraction', 
+		parser.add_argument('videos', type=argparse.FileType('r'), nargs='+',
+							help='video or videos to extraction',
 							metavar='video')
-	
+
 	def add_argument_basedir(self, parser, default_help_desc, **kwargs):
 		parser.add_argument('--dir', help="directory that will contain the "
 							"extracted items ({}), if [%(metavar)s] "
-							"is empty".format(default_help_desc), 
-							dest='basedir', default='', nargs='?', 
+							"is empty".format(default_help_desc),
+							dest='basedir', default='', nargs='?',
 							metavar='directory', **kwargs)
 
 	def parse_args(self):
@@ -248,19 +248,19 @@ class ArgsBuilder(object):
 		return instance
 
 	class DefaultDirAction(argparse.Action):
-	
+
 		def __call__(self, parser, namespace, values, option_string=None):
 			setattr(namespace, self.dest, values or namespace.type_)
 
 	class Namespace(argparse.Namespace):
 
 		def vars(self, excludes=None):
-			dict_ = vars(self).copy()
-			for exclude in excludes or ():
-				if exclude in dict_:
-					del dict_[exclude]
-		
-			return dict_
+			vars_ = vars(self)
+
+			if excludes is None:
+				return vars_.copy()
+
+			return {k: v for k, v in vars_.items() if k not in excludes}
 
 
 def main():
@@ -280,4 +280,3 @@ def main():
 
 if __name__ == '__main__':
 	main()
-
