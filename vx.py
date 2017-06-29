@@ -142,7 +142,7 @@ class tools(object):
 				msg = '{!r} must have the version {} or newer'
 				raise VxException(msg.format(tool, self.MIN_VERSION))
 		except FileNotFoundError:
-			raise VxException('{0!r} Not found.\nPlease install {0!r} in {} '
+			raise VxException('{0!r} not found.\nInstall {0!r} in {1} '
 				'version or newer'.format(tool, self.MIN_VERSION))
 
 	def is_version_allowed(self, version):
@@ -163,8 +163,8 @@ class tools(object):
 
 
 @tools.verify(MKV_MERGE)
-def get_extraction_specs(mode, video_filename, **kwargs):
-	commands = [MKV_MERGE, '-i', '-F', 'json', video_filename]
+def get_extraction_specs(mode, video, **kwargs):
+	commands = [MKV_MERGE, '-i', '-F', 'json', video]
 	data = subprocess.check_output(commands, universal_newlines=True)
 
 	extraction_specs = mode(json.loads(data), **kwargs).specs()
@@ -175,25 +175,23 @@ def get_extraction_specs(mode, video_filename, **kwargs):
 	return extraction_specs
 
 
-@tools.verify(MKV_EXTRACT)
+@tools.verify(MKV_EXTRACT, MKV_MERGE)
 def extract(namespace):
 	kwargs = namespace.vars(excludes=('mode', 'videos'))
 
-	for video_obj in namespace.videos:
-		with video_obj as video:
-			try:
-				print('Processing: {!r}'.format(os.path.basename(video.name)))
-				extraction_specs = get_extraction_specs(namespace.mode,
-														video.name, **kwargs)
+	for index, video in enumerate(namespace.videos, 1):
+		try:
+			print('Processing: {!r}'.format(os.path.basename(video)))
+			extraction_specs = get_extraction_specs(namespace.mode, video, 
+													**kwargs)
+			commands = [MKV_EXTRACT, namespace.mode.__mode__, video]
+			commands.extend(extraction_specs)
+			subprocess.call(commands)
+		except VxException as e:
+			e.print_message()
 
-				commands = [MKV_EXTRACT, namespace.mode.__mode__, video.name]
-				commands.extend(extraction_specs)
-				subprocess.call(commands)
-			except VxException as e:
-				e.print_message()
-
-			if video != namespace.videos[-1]:
-				print()
+		if index != len(namespace.videos):
+			print()
 
 
 class ArgsBuilder(object):
@@ -210,7 +208,7 @@ class ArgsBuilder(object):
 		tracks_parser = self.add_parser_extraction_mode(Tracks)
 
 		self.add_argument_basedir(tracks_parser, "default: '--type' value",
-									action=self.DefaultDirAction)
+									action=DefaultDirectoryAction)
 
 		tracks_parser.add_argument('--type', dest='type_', default='subtitles',
 									help="type of track to extraction "
@@ -231,36 +229,45 @@ class ArgsBuilder(object):
 		return parser
 
 	def add_argument_videos(self, parser):
-		parser.add_argument('videos', type=argparse.FileType('r'), nargs='+',
+		parser.add_argument('videos', type=FileTypeArgument('r'), nargs='+',
 							help='video or videos to extraction',
 							metavar='video')
 
 	def add_argument_basedir(self, parser, default_help_desc, **kwargs):
-		parser.add_argument('--dir', help="directory that will contain the "
-							"extracted items ({}), if [%(metavar)s] "
-							"is empty".format(default_help_desc),
+		parser.add_argument('--dir', help='directory that will contain the '
+							'extracted items ({} if [%(metavar)s] '
+							'is empty)'.format(default_help_desc),
 							dest='basedir', default='', nargs='?',
 							metavar='directory', **kwargs)
 
 	def parse_args(self):
-		instance = self.Namespace()
+		instance = Namespace()
 		self.parser.parse_args(namespace=instance)
 		return instance
 
-	class DefaultDirAction(argparse.Action):
 
-		def __call__(self, parser, namespace, values, option_string=None):
-			setattr(namespace, self.dest, values or namespace.type_)
+class Namespace(argparse.Namespace):
 
-	class Namespace(argparse.Namespace):
+	def vars(self, excludes=None):
+		vars_ = vars(self)
 
-		def vars(self, excludes=None):
-			vars_ = vars(self)
+		if excludes is None:
+			return vars_.copy()
 
-			if excludes is None:
-				return vars_.copy()
+		return {k: v for k, v in vars_.items() if k not in excludes}
 
-			return {k: v for k, v in vars_.items() if k not in excludes}
+
+class DefaultDirectoryAction(argparse.Action):
+
+	def __call__(self, parser, namespace, values, option_string=None):
+		setattr(namespace, self.dest, values or namespace.type_)
+
+
+class FileTypeArgument(argparse.FileType):
+
+	def __call__(self, string):
+		with super(FileTypeArgument, self).__call__(string) as f:
+			return f.name
 
 
 def main():
@@ -279,3 +286,4 @@ def main():
 
 if __name__ == '__main__':
 	main()
+
