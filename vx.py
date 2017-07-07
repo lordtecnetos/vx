@@ -93,7 +93,7 @@ class Tracks(ExtractionMode):
 
 		for sub in subs:
 			ftype = FileType.get(sub.get('properties').get('codec_id'))
-			extraname = '_' + sub.get('id') if len(subs) > 1 else ''
+			extraname = '_' + str(sub.get('id')) if len(subs) > 1 else ''
 			path = '{}{}.{.extension}'.format(basedir, extraname, ftype)
 			subtitles.append(OUTPUT_SPEC.format(id=sub.get('id'), path=path))
 
