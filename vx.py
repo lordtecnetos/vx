@@ -205,7 +205,7 @@ class ArgsBuilder(object):
 
 		self.subparsers = self.parser.add_subparsers(help='extraction modes')
 
-		tracks_parser = self.add_parser_extraction_mode(Tracks)
+		tracks_parser = self.add_parser_extraction_mode(Tracks, 't')
 
 		self.add_argument_basedir(tracks_parser, "default: '--type' value",
 									action=DefaultDirectoryAction)
@@ -215,15 +215,16 @@ class ArgsBuilder(object):
 									"(default: '%(default)s')",
 									choices=['subtitles'])
 
-		attachments_parser = self.add_parser_extraction_mode(Attachments)
+		attachments_parser = self.add_parser_extraction_mode(Attachments, 'a')
 
 		self.add_argument_basedir(attachments_parser, "default: 'attachments'",
 									const='attachments')
 
-	def add_parser_extraction_mode(self, mode):
+	def add_parser_extraction_mode(self, mode, alias):
 		help_message = 'extract {.__mode__} from Matroska files'.format(mode)
 		parser = self.subparsers.add_parser(mode.__mode__, help=help_message,
-											description=mode.__doc__)
+											description=mode.__doc__,
+											aliases=[alias])
 		self.add_argument_videos(parser)
 		parser.set_defaults(mode=mode)
 		return parser
