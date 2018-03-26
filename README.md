@@ -24,7 +24,7 @@ After installed, type `vx` or `vx -h` or `vx --help` to see the options and comm
 
 Basic usage: `vx [-h] {tracks,attachments} ...`
 
-**vx** only supports two extraction modes offered by `mkvextract` ([see](https://mkvtoolnix.download/doc/mkvextract.html#mkvextract.synopsis) the docs) command:
+**vx** only supports two extraction modes offered by `mkvextract` command ([see](https://mkvtoolnix.download/doc/mkvextract.html#mkvextract.synopsis) the docs):
 
 * #### Tracks extraction mode
   
