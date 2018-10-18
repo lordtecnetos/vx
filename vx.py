@@ -174,7 +174,7 @@ def get_extraction_specs(mode, video, **kwargs):
     extraction_specs = mode(json.loads(data), **kwargs).specs()
 
     if not extraction_specs:
-        raise VxException('Nothing was found')
+        raise VxException('No {.__mode__}'.format(mode))
 
     return extraction_specs
 
