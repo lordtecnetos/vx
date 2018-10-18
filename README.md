@@ -24,7 +24,7 @@ After installed, type `vx` or `vx -h` or `vx --help` to see the options and comm
 
 Basic usage: `vx [-h] {tracks,attachments} ...`
 
-**vx** only supports two extraction modes offered by `mkvextract` ([see](https://mkvtoolnix.download/doc/mkvextract.html#mkvextract.synopsis) the docs) command:
+**vx** only supports two extraction modes offered by `mkvextract` command ([see](https://mkvtoolnix.download/doc/mkvextract.html#mkvextract.synopsis) the docs):
 
 * #### Tracks extraction mode
   
@@ -34,7 +34,7 @@ Basic usage: `vx [-h] {tracks,attachments} ...`
   
   * `--dir [directory]` (*optional*) - directory that will contain the extracted items (*default: `--type` value, if `[directory]` is empty*)
   
-  * `--type {subtitles}` (*optional*) - type of track to extraction (*default: `subtitles`*). There are others types of tracks, how `audio` and `video`, but, in this version, only `subtitles` type is supported ;)
+  * `--type {subtitles}` (*optional*) - type of track to extraction (*default: `subtitles`*). There are others types of tracks, how `audio` and `video`, but in this version, only `subtitles` type is supported ;)
   
   * `-h` or `--help` (*optional*) - show the help message
  
@@ -85,8 +85,3 @@ Basic usage: `vx [-h] {tracks,attachments} ...`
   # extracts all attachments from video to ~/Downloads directory
   $ vx attachments video.mkv --dir ~/Downloads
   ```
-
-### Author and Contact
-
-Alessandro Beleboni Belini (lordtecnetos@gmail.com)
-
