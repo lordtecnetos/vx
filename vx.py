@@ -32,7 +32,7 @@ class FileType(Enum):
 
     @classmethod
     def get(cls, codec_id):
-        for name, member in cls.__members__.items():
+        for member in cls.__members__.values():
             if member.codec_id == codec_id:
                 return member
 
@@ -60,7 +60,7 @@ class ExtractionMode(object):
         self.__identification_json = identification_json
 
     @property
-    def sourcefilename(self): # video.mkv
+    def sourcefilename(self):  # video.mkv
         return self.__sourcefilename
 
     @sourcefilename.setter
@@ -68,16 +68,16 @@ class ExtractionMode(object):
         self.__sourcefilename = os.path.basename(filename)
 
     @property
-    def sourcename(self): # video
+    def sourcename(self):  # video
         return os.path.splitext(self.sourcefilename)[0]
 
     @property
-    def basedir_sourcename(self): # basedir/video
+    def basedir_sourcename(self):  # basedir/video
         return os.path.join(self.basedir, self.sourcename)
-        
+
     def spec(self, id_, path):
         return '{}:{}'.format(id_, path)
-    
+
     def specs(self):
         pass
 
@@ -147,7 +147,7 @@ class tools(object):
                 raise VxException(msg.format(tool, self.MIN_VERSION))
         except FileNotFoundError:
             raise VxException('{0!r} not found.\nInstall {0!r} in {1} '
-                'version or newer'.format(tool, self.MIN_VERSION))
+                              'version or newer'.format(tool, self.MIN_VERSION))
 
     def is_version_allowed(self, version):
         search = re.search(r'v[\d.]+', version)
@@ -157,6 +157,7 @@ class tools(object):
     @classmethod
     def verify(cls, *tools_to_check):
         tools = cls()
+
         def wrap(function):
             def inner(*args, **kwargs):
                 for tool in tools_to_check:
@@ -181,12 +182,12 @@ def get_extraction_specs(mode, video, **kwargs):
 
 @tools.verify(MKV_EXTRACT, MKV_MERGE)
 def extract(namespace):
-    kwargs = namespace.vars(excludes=('mode', 'videos'))
+    kwargs = namespace.vars(exclude=('mode', 'videos'))
 
     for index, video in enumerate(namespace.videos, 1):
         try:
             print('Processing: {!r}'.format(os.path.basename(video)))
-            extraction_specs = get_extraction_specs(namespace.mode, video, 
+            extraction_specs = get_extraction_specs(namespace.mode, video,
                                                     **kwargs)
             commands = [MKV_EXTRACT, namespace.mode.__mode__, video]
             commands.extend(extraction_specs)
@@ -202,27 +203,28 @@ class ArgsBuilder(object):
 
     def __init__(self):
         self.parser = argparse.ArgumentParser(description="This program "
-                        "extracts specific parts from multiple Matroska file. "
-                        "The {!r} and {!r} commands from 'MKVToolNix' are used "
-                        "to perform the task".format(MKV_EXTRACT, MKV_MERGE),
-                        prog=__prog__)
+                                              "extracts specific parts from multiple Matroska file. "
+                                              "The {!r} and {!r} commands from 'MKVToolNix' are used "
+                                              "to perform the task".format(
+                                                  MKV_EXTRACT, MKV_MERGE),
+                                              prog=__prog__)
 
         self.subparsers = self.parser.add_subparsers(help='extraction modes')
 
         tracks_parser = self.add_parser_extraction_mode(Tracks, 't')
 
         self.add_argument_basedir(tracks_parser, "default: '--type' value",
-                                    action=DefaultDirectoryAction)
+                                  action=DefaultDirectoryAction)
 
         tracks_parser.add_argument('--type', dest='type_', default='subtitles',
-                                    help="type of track to extraction "
-                                    "(default: '%(default)s')",
-                                    choices=['subtitles'])
+                                   help="type of track to extraction "
+                                   "(default: '%(default)s')",
+                                   choices=['subtitles'])
 
         attachments_parser = self.add_parser_extraction_mode(Attachments, 'a')
 
         self.add_argument_basedir(attachments_parser, "default: 'attachments'",
-                                    const='attachments')
+                                  const='attachments')
 
     def add_parser_extraction_mode(self, mode, alias):
         help_message = 'extract {.__mode__} from Matroska files'.format(mode)
@@ -253,13 +255,13 @@ class ArgsBuilder(object):
 
 class Namespace(argparse.Namespace):
 
-    def vars(self, excludes=None):
+    def vars(self, exclude=None):
         vars_ = vars(self)
 
-        if excludes is None:
+        if exclude is None:
             return vars_.copy()
 
-        return {k: v for k, v in vars_.items() if k not in excludes}
+        return {k: v for k, v in vars_.items() if k not in exclude}
 
 
 class DefaultDirectoryAction(argparse.Action):
@@ -291,4 +293,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
