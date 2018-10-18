@@ -2,7 +2,7 @@
 
 **vx** is a command line tool that extracts specific parts from multiple [Matroska](https://www.matroska.org/) files. 
 
-The `mkvextract` and `mkvmerge` commands from [MKVToolNix](https://mkvtoolnix.download/) are used to perform the
+`mkvextract` and `mkvmerge` commands from [MKVToolNix](https://mkvtoolnix.download/) are used to perform the
 task.
 
 ### Requirements
